@@ -2,20 +2,21 @@ package controllers
 
 import (
 	"net/http"
-	"log"
-	"fmt"
-	"github.com/sony/sonyflake"
+	"errors"
+	
 	"github.com/zyahrial/blantik-be/api/responses"
+	"github.com/zyahrial/blantik-be/api/auth"
 )
 
 func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
 
-	flake := sonyflake.NewSonyflake(sonyflake.Settings{})
-	id, err := flake.NextID()
+	//CHeck if the auth token is valid and  get the user id from it
+	uid, err := auth.ExtractTokenID(r)
 	if err != nil {
-		log.Fatalf("flake.NextID() failed with %s\n", err)
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
 	}
-	responses.JSON(w, http.StatusOK, id)
-	fmt.Println("Your UUID is: %s", id)
+
+	responses.JSON(w, http.StatusOK, uid)
 
 }
