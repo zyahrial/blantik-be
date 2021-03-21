@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/zyahrial/gocode/api/controllers"
-	"github.com/zyahrial/gocode/api/seed"
+	"github.com/zyahrial/blantik-be/api/controllers"
+	"github.com/zyahrial/blantik-be/api/seed"
 )
 
 var server = controllers.Server{}

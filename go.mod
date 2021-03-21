@@ -1,4 +1,4 @@
-module github.com/zyahrial/gocode
+module github.com/zyahrial/blantik-be
 
 go 1.15
 
@@ -17,7 +17,9 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/satori/go.uuid v1.2.0
+	github.com/sony/sonyflake v1.0.0
 	github.com/stretchr/testify v1.3.0
+	github.com/zyahrial/gocode v0.0.0-20210215170249-81bf4d991961
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 	gopkg.in/go-playground/assert.v1 v1.2.1
 )

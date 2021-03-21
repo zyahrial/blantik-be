@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"github.com/zyahrial/gocode/api/models"
+	"github.com/zyahrial/blantik-be/api/models"
 )
 
 var users = []models.User{
@@ -36,6 +36,25 @@ var users = []models.User{
 	},
 }
 
+
+var product = []models.Product{
+	models.Product{
+	Product : "Hasil Pertanian",
+    Category : "Cabe Merah",
+	Description : "Cabe merah asli pekalongan",
+	Price : 15000,
+	Qty : 20,
+	Status : "Live",
+	},
+	models.Product{
+	Product : "Hasil Peternakan",
+    Category : "Sapi Bali",
+	Description : "Sapi bali usia 12 bulan",
+	Price : 10000000,
+	Status : "Pause",
+	},
+}
+
 var posts = []models.Post{
 	models.Post{
 		Title:   "Title 1",
@@ -49,30 +68,48 @@ var posts = []models.Post{
 
 func Load(db *gorm.DB) {
 
-	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}).Error
+	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}, &models.Product{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}
-	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}).Error
+	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Product{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
 	}
 
-	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
+
+	err = db.Debug().Model(&models.Product{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
 	if err != nil {
 		log.Fatalf("attaching foreign key error: %v", err)
 	}
+	
+	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id","users(id)", "cascade", "cascade").Error
+	if err != nil {
+		log.Fatalf("attaching foreign key error: %v", err)
+	}
+	
 
 	for i, _ := range users {
+
 		err = db.Debug().Model(&models.User{}).Create(&users[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed users table: %v", err)
 		}
+
 		posts[i].AuthorID = users[i].ID
 
 		err = db.Debug().Model(&models.Post{}).Create(&posts[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed posts table: %v", err)
 		}
+
+		product[i].AuthorID = users[i].ID
+
+		err = db.Debug().Model(&models.Product{}).Create(&product[i]).Error
+		if err != nil {
+			log.Fatalf("cannot seed product table: %v", err)
+		}
+		
 	}
+	
 }
