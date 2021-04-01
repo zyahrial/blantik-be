@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	// "log"
+	// "os"
 
 	"github.com/zyahrial/blantik-be/api/auth"
 	"github.com/zyahrial/blantik-be/api/models"
@@ -32,13 +34,17 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	token, err := server.SignIn(user.Email, user.Password)
+	
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 		return
 	}
+	
+	responses.JSON(w, http.StatusOK, user.Email)
 	responses.JSON(w, http.StatusOK, token)
 }
+
 
 func (server *Server) SignIn(email, password string) (string, error) {
 

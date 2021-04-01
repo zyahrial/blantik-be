@@ -4,6 +4,10 @@ import "github.com/zyahrial/blantik-be/api/middlewares"
 
 func (s *Server) initializeRoutes() {
 
+	// router := gin.Default()
+
+	// router.POST("/login", loginHandler)
+
 	// Home Route
 	s.Router.HandleFunc("/", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.Home))).Methods("GET")
 
