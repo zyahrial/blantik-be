@@ -16,6 +16,7 @@ type User struct {
 	ID        uint32    `gorm:"primary_key; auto_increment" json:"id"`
 	Nickname  string    `gorm:"size:255;not null;unique" json:"nickname"`
 	Email     string    `gorm:"size:100;not null;unique" json:"email"`
+	Phone     string    `gorm:"size:20;not null;unique" json:"phone"`
 	Password  string    `gorm:"size:100;not null;" json:"password"`
 	Kecamatan  string    `gorm:"size:255;not null;" json:"kecamatan"`
 	Kota  string    `gorm:"size:255;not null;" json:"kota"`
@@ -50,6 +51,7 @@ func (u *User) Prepare() {
 	u.ID = 0
 	u.Nickname = html.EscapeString(strings.TrimSpace(u.Nickname))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
+	u.Phone = html.EscapeString(strings.TrimSpace(u.Phone))
 	u.Kecamatan = html.EscapeString(strings.TrimSpace(u.Kecamatan))
 	u.Kota = html.EscapeString(strings.TrimSpace(u.Kota))
 	u.Provinsi = html.EscapeString(strings.TrimSpace(u.Provinsi))
@@ -74,23 +76,26 @@ func (u *User) Validate(action string) error {
 		if u.Email == "" {
 			return errors.New("Required Email")
 		}
+		if u.Phone == "" {
+			return errors.New("Required Phone")
+		}
 		if err := checkmail.ValidateFormat(u.Email); err != nil {
 			return errors.New("Invalid Email")
-		if u.Kecamatan == "" {
-			return errors.New("Required Kecamatan")
-		}
-		if u.Kota == "" {
-			return errors.New("Required Kota")
-		}
-		if u.Provinsi == "" {
-			return errors.New("Required Provinsi")
-		}
-		if u.Negara == "" {
-			return errors.New("Required Negara")
-		}
-		if u.Alamat == "" {
-			return errors.New("Required Alamat")
-		}
+		// if u.Kecamatan == "" {
+		// 	return errors.New("Required Kecamatan")
+		// }
+		// if u.Kota == "" {
+		// 	return errors.New("Required Kota")
+		// }
+		// if u.Provinsi == "" {
+		// 	return errors.New("Required Provinsi")
+		// }
+		// if u.Negara == "" {
+		// 	return errors.New("Required Negara")
+		// }
+		// if u.Alamat == "" {
+		// 	return errors.New("Required Alamat")
+		// }
 		}
 
 		return nil
@@ -167,6 +172,18 @@ func (p *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	var err error
 	err = db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+	if gorm.IsRecordNotFoundError(err) {
+		return &User{}, errors.New("User Not Found")
+	}
+	return u, err
+}
+
+func (u *User) FindMe(db *gorm.DB, email string) (*User, error) {
+	var err error
+	err = db.Debug().Model(User{}).Where("email = ?", email).Take(&u).Error
 	if err != nil {
 		return &User{}, err
 	}

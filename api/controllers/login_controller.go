@@ -6,6 +6,8 @@ import (
 	"net/http"
 	// "log"
 	// "os"
+	"fmt"
+	// "encoding/json"
 
 	"github.com/zyahrial/blantik-be/api/auth"
 	"github.com/zyahrial/blantik-be/api/models"
@@ -40,9 +42,34 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 		return
 	}
+
+	var email = user.Email
 	
-	responses.JSON(w, http.StatusOK, user.Email)
-	responses.JSON(w, http.StatusOK, token)
+	Me, err := user.FindMe(server.DB, email)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	//   var me = Me{}
+
+	type Status struct {
+		Success		bool
+		Token        string		`json:"Token"`
+		User		 models.User			
+		// Product        string		`gorm:"size:255;not null" json:"product"`
+	  }
+
+	  var p = Status{true,token,user}
+
+
+	//   status := Status{}
+
+	fmt.Printf("%v\n", Me)
+
+	// return status, 
+	responses.JSON(w, http.StatusOK, p)
+	// responses.JSON(w, http.StatusOK, Me)
 }
 
 
@@ -60,5 +87,14 @@ func (server *Server) SignIn(email, password string) (string, error) {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}
+
+	// type Success struct {
+	// 	Status   string    `gorm:"size:255;not null;" json:"status"`
+	// 	Author    User      `json:"author"`
+	// 	AuthorID  uint32    `gorm:"not null" json:"author_id"`
+	// 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	// 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	// }
+
 	return auth.CreateToken(user.ID)
 }

@@ -10,7 +10,8 @@ import (
 var users = []models.User{
 	models.User{
 		Nickname: "Khaerus Zyahrial",
-		Email:    "khaerus@gmail.com",
+		Email:    "kzyahrial@gmail.com",
+		Phone:    "081297046112",
 		Password: "password",
 		Kecamatan:    "Pekalongan Barat",
 		Kota:    "Pekalongan",
@@ -22,8 +23,9 @@ var users = []models.User{
 		Alamat:    "Jl. Urip Sumoharjo no.171 02/04 Desa Pringlangu",
 	},
 	models.User{
-		Nickname: "Sheza",
+		Nickname: "Sheza Aqila",
 		Email:    "sheza@gmail.com",
+		Phone:    "08125244232",
 		Password: "password",
 		Kecamatan:    "Medan Satria",
 		Kota:    "Bekasi",
