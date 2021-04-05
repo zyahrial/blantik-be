@@ -43,7 +43,19 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.RequestURI, userCreated.ID))
-	responses.JSON(w, http.StatusCreated, userCreated)
+
+	token, err := auth.CreateToken(user.ID)
+
+	type Status struct {
+		Success		bool		`json:"success"`
+		Token        string		`json:"token"`
+		User		 models.User		`json:"user"`
+		// Product        string		`gorm:"size:255;not null" json:"product"`
+	  }
+
+	  var p = Status{true,token,user}
+	// responses.JSON(w, http.StatusCreated, userCreated)
+	responses.JSON(w, http.StatusCreated, p)
 }
 
 func (server *Server) GetUsers(w http.ResponseWriter, r *http.Request) {

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"errors"
+
 	// "log"
 	// "os"
 	"fmt"
@@ -54,22 +56,32 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	//   var me = Me{}
 
 	type Status struct {
-		Success		bool
-		Token        string		`json:"Token"`
-		User		 models.User			
+		Success		bool		`json:"success"`
+		Token        string		`json:"token"`
+		User		 models.User		`json:"user"`
 		// Product        string		`gorm:"size:255;not null" json:"product"`
 	  }
+
+	//   type Token struct {
+	// 	Token		string		`json:"token"`
+	// 	// Product        string		`gorm:"size:255;not null" json:"product"`
+	//   }
+	  
+	//   var my_token = Token{token}
+
+	//   fmt.Printf("%v\n", my_token)
+	  fmt.Printf("%v\n", Me)
 
 	  var p = Status{true,token,user}
 
 
 	//   status := Status{}
 
-	fmt.Printf("%v\n", Me)
+	// fmt.Printf("%v\n", my_token)
 
 	// return status, 
 	responses.JSON(w, http.StatusOK, p)
-	// responses.JSON(w, http.StatusOK, Me)
+	// responses.JSON(w, http.StatusOK, my_token)
 }
 
 
@@ -88,6 +100,7 @@ func (server *Server) SignIn(email, password string) (string, error) {
 		return "", err
 	}
 
+
 	// type Success struct {
 	// 	Status   string    `gorm:"size:255;not null;" json:"status"`
 	// 	Author    User      `json:"author"`
@@ -97,4 +110,35 @@ func (server *Server) SignIn(email, password string) (string, error) {
 	// }
 
 	return auth.CreateToken(user.ID)
+
+	// responses.JSON(w, http.StatusOK, p)
+}
+
+func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
+
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+
+	type Status struct {
+		Success		 bool		`json:"success"`
+		Message        string		`json:"token"`
+		// Product        string		`gorm:"size:255;not null" json:"product"`
+	  }
+
+	var message = "Logout Successfully"
+
+	var p = Status{true,message}
+	
+	fmt.Printf("%v\n", uid)
+	fmt.Printf("%v\n", "has logout")
+
+
+	// var name = userGotten.Nickname
+
+	// logout, err := auth.RefreshToken(user.ID)
+	responses.JSON(w, http.StatusOK, p)
+
 }

@@ -26,6 +26,7 @@ type User struct {
 	Latitude  string    `gorm:"size:255;not null;" json:"latitude"`
 	Longitude  string   `gorm:"size:255;not null;" json:"longitude"`
 	Level  int64   `gorm:"size:11;not null;" json:"level"`
+	Email_validate_at  time.Time   `gorm:"default:null" json:"email_validate_at"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
