@@ -53,31 +53,29 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//   var me = Me{}
+	// var me = Me{}
+	fmt.Printf("%v\n", Me)
 
-	type Status struct {
-		Success		bool		`json:"success"`
-		Token        string		`json:"token"`
-		User		 models.User		`json:"user"`
+	type New_Token struct {
+		Token		string		`json:"token"`
 		// Product        string		`gorm:"size:255;not null" json:"product"`
 	  }
 
-	//   type Token struct {
-	// 	Token		string		`json:"token"`
-	// 	// Product        string		`gorm:"size:255;not null" json:"product"`
-	//   }
+	var my_token = New_Token{token}
+
+	type Status struct {
+		Success		bool		`json:"success"`
+		New_Token   New_Token		`json:"token"`
+		User		models.User		`json:"user"`
+		// Product        string		`gorm:"size:255;not null" json:"product"`
+	  }
 	  
-	//   var my_token = Token{token}
-
-	//   fmt.Printf("%v\n", my_token)
-	  fmt.Printf("%v\n", Me)
-
-	  var p = Status{true,token,user}
+	  var p = Status{true,my_token,user}
 
 
 	//   status := Status{}
 
-	// fmt.Printf("%v\n", my_token)
+	fmt.Printf("%v\n", p)
 
 	// return status, 
 	responses.JSON(w, http.StatusOK, p)
